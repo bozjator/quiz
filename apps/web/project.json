@@ -1,28 +1,28 @@
 {
-  "name": "quiz",
+  "name": "web",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/quiz/src",
+  "sourceRoot": "apps/web/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/quiz",
-        "index": "apps/quiz/src/index.html",
-        "main": "apps/quiz/src/main.ts",
+        "outputPath": "dist/apps/web",
+        "index": "apps/web/src/index.html",
+        "main": "apps/web/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "apps/quiz/tsconfig.app.json",
+        "tsConfig": "apps/web/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/quiz/public"
+            "input": "apps/web/public"
           }
         ],
-        "styles": ["apps/quiz/src/styles.scss"]
+        "styles": ["apps/web/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -56,10 +56,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "quiz:build:production"
+          "buildTarget": "web:build:production"
         },
         "development": {
-          "buildTarget": "quiz:build:development"
+          "buildTarget": "web:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -67,7 +67,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "buildTarget": "quiz:build"
+        "buildTarget": "web:build"
       }
     },
     "lint": {
@@ -77,7 +77,7 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "quiz:build",
+        "buildTarget": "web:build",
         "spa": true
       }
     }
