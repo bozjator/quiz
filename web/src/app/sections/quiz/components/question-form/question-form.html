@@ -1,0 +1,137 @@
+<form [formGroup]="form" class="flex flex-col gap-4">
+  <!-- QUESTION -->
+  <label class="flex flex-col gap-1 mb-4">
+    <span class="font-medium text-gray-700 text-xl">Question</span>
+    <textarea
+      formControlName="question"
+      rows="4"
+      class="w-full rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    ></textarea>
+  </label>
+
+  <!-- CORRECT answers and feedback -->
+  <div class="text-gray-700 mb-4 bg-green-50 p-2 rounded">
+    <span class="text-xl flex font-medium items-center gap-1 mb-2">
+      <mat-icon class="text-green-500">check_circle</mat-icon>
+      Correct
+    </span>
+
+    <div class="flex flex-col gap-2">
+      <span class="flex items-center">
+        Answers
+        <app-icon-button
+          class="ml-auto"
+          [size]="20"
+          [color]="'text-green-500'"
+          [icon]="'add'"
+          (click)="addNewCorrectAnswer()"
+      /></span>
+
+      <!-- List of correct answers -->
+      @for (answer of form.controls.correctAnswers.controls; track $index; let i = $index) {
+        <div [formGroup]="answer" class="flex gap-2 items-start">
+          <!-- Answer text -->
+          <input
+            formControlName="answer"
+            placeholder="Answer text"
+            class="flex-1 rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+
+          <!-- Answer explanation -->
+          <input
+            formControlName="explanation"
+            placeholder="Explanation"
+            class="flex-1 rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+
+          <!-- Delete button -->
+          <app-icon-button
+            class="mt-1.5"
+            [size]="20"
+            [icon]="'remove'"
+            (click)="removeCorrectAnswer(i)"
+          />
+        </div>
+      }
+    </div>
+
+    <!-- Feedback textarea -->
+    <label class="flex flex-col gap-1 mt-4">
+      <span>Feedback</span>
+      <textarea
+        formControlName="feedbackOnCorrect"
+        rows="2"
+        class="w-full rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+      ></textarea>
+    </label>
+  </div>
+
+  <!-- INCORRECT answers and feedback -->
+  <div class="text-gray-700 mb-4 bg-red-50 p-2 rounded">
+    <span class="text-xl flex font-medium items-center gap-1">
+      <mat-icon class="text-red-500">cancel</mat-icon>
+      Incorrect
+    </span>
+
+    <div class="flex flex-col gap-2">
+      <span class="flex items-center">
+        Answers
+        <app-icon-button
+          class="ml-auto"
+          [size]="20"
+          [color]="'text-red-500'"
+          [icon]="'add'"
+          (click)="addNewIncorrectAnswer()"
+      /></span>
+
+      <!-- List of incorrect answers -->
+      @for (answer of form.controls.incorrectAnswers.controls; track $index; let i = $index) {
+        <div [formGroup]="answer" class="flex gap-2 items-start">
+          <!-- Answer text -->
+          <input
+            formControlName="answer"
+            placeholder="Answer text"
+            class="flex-1 rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+
+          <!-- Answer explanation -->
+          <input
+            formControlName="explanation"
+            placeholder="Explanation"
+            class="flex-1 rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+
+          <!-- Delete button -->
+          <app-icon-button
+            class="mt-1.5"
+            [size]="20"
+            [icon]="'remove'"
+            (click)="removeIncorrectAnswer(i)"
+          />
+        </div>
+      }
+    </div>
+
+    <!-- Feedback textarea -->
+    <label class="flex flex-col gap-1 mt-4">
+      <span>Feedback</span>
+      <textarea
+        formControlName="feedbackOnIncorrect"
+        rows="2"
+        class="w-full rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500"
+      ></textarea>
+    </label>
+  </div>
+
+  <!-- EXPLANATION -->
+  <label class="flex flex-col gap-1">
+    <span class="font-medium text-gray-700 text-xl">Explanation</span>
+    <textarea
+      formControlName="explanation"
+      rows="8"
+      class="w-full rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    ></textarea>
+  </label>
+
+  <button [disabled]="!form.valid" (click)="save()" class="app-btn self-start">Save</button>
+</form>

@@ -1,0 +1,31 @@
+<auth-page-layout>
+  @if (isUserLoggedOut) {
+    <div class="text-center">
+      <h1 class="mt-6 text-2xl font-bold tracking-tight text-gray-700">
+        Signed Out
+      </h1>
+      <p class="mt-4 text-base leading-7 text-gray-500">
+        You were successfully signed out.
+      </p>
+    </div>
+
+    <p class="mt-10 text-center text-sm text-gray-500">
+      <a
+        href="/login"
+        class="font-semibold leading-6 text-blue-400 hover:text-blue-500"
+      >
+        Sign In
+      </a>
+    </p>
+  } @else {
+    <div class="text-center">
+      <h1 class="mt-6 text-2xl font-bold tracking-tight text-gray-700">
+        Signing you out
+      </h1>
+      <p class="mt-4 text-base leading-7 text-gray-500">Please wait</p>
+      <div class="mt-6 flex w-full justify-center">
+        <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+    </div>
+  }
+</auth-page-layout>

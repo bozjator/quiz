@@ -1,0 +1,37 @@
+<div
+  class="flex w-full items-center gap-x-6 px-4 py-4 sm:px-6 lg:pl-6"
+  [ngClass]="{
+    'shadow-md shadow-gray-400 dark:shadow-gray-800': true,
+    'border-b border-zinc-200 dark:border-white/10 lg:dark:border-zinc-600': true,
+    'bg-gray-700 dark:bg-gray-800 lg:bg-gray-100 lg:dark:bg-neutral-800': true,
+  }"
+>
+  <div
+    class="flex gap-x-3 text-sm font-semibold leading-6 text-slate-100 dark:text-neutral-200 lg:text-slate-700"
+  >
+    <mat-icon>{{ layoutService.pageTitleIcon() }}</mat-icon>
+    {{ layoutService.pageTitle() }}
+  </div>
+  @if (!layoutService.isMobileSidebarVisible()) {
+    <button
+      type="button"
+      class="-m-2.5 ml-auto p-2.5 text-gray-300 lg:hidden"
+      (click)="layoutService.isMobileSidebarVisible.set(true)"
+    >
+      <span class="sr-only">Open sidebar</span>
+      <svg
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+        />
+      </svg>
+    </button>
+  }
+</div>

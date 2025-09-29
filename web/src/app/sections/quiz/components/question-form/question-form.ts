@@ -1,0 +1,173 @@
+import { Component, effect, inject, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Question } from '../../../../shared/models/quiz/question.model';
+import { CreateUpdateQuestion } from '../../../../shared/models/quiz/create-update-question.model';
+import { QuestionApiService } from '../../../../shared/services/api/question-api.service';
+import { NotificationService } from '../../../../shared/components/others/notification/notification.service';
+import { AlertType } from '../../../../shared/components/alert.component';
+import { INPUT_LENGTHS } from '../../../../app.config';
+import { Answer } from '../../../../shared/models/quiz/answer.model';
+import { IconButtonComponent } from '../../../../shared/components/buttons/icon-button.component';
+
+export type AnswerForm = FormGroup<{
+  id: FormControl<string>;
+  answer: FormControl<string>;
+  explanation: FormControl<string>;
+}>;
+
+interface IQuestionForm {
+  question: FormControl<string | null>;
+  explanation: FormControl<string | null>;
+  feedbackOnCorrect: FormControl<string | null>;
+  feedbackOnIncorrect: FormControl<string | null>;
+  correctAnswers: FormArray<AnswerForm>;
+  incorrectAnswers: FormArray<AnswerForm>;
+}
+
+@Component({
+  selector: 'app-question-form',
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule, IconButtonComponent],
+  templateUrl: './question-form.html',
+})
+export class QuestionForm {
+  private fb = inject(FormBuilder);
+  private questionApiService = inject(QuestionApiService);
+  private notificationService = inject(NotificationService);
+
+  readonly question = input.required<Question>();
+  readonly onQuestionCreated = output<string>();
+  readonly onQuestionUpdated = output<string>();
+
+  form: FormGroup<IQuestionForm> = this.fb.group({
+    question: ['', [Validators.required, Validators.minLength(INPUT_LENGTHS.min.question)]],
+    explanation: [''],
+    feedbackOnCorrect: [''],
+    feedbackOnIncorrect: [''],
+    correctAnswers: this.fb.array<AnswerForm>([]),
+    incorrectAnswers: this.fb.array<AnswerForm>([]),
+  });
+
+  constructor() {
+    this.populateForm();
+  }
+
+  private createAnswerForm(a: Answer | null): AnswerForm {
+    return this.fb.group({
+      id: [a?.id ?? ''],
+      answer: [
+        a?.answer ?? '',
+        [Validators.required, Validators.minLength(INPUT_LENGTHS.min.answer)],
+      ],
+      explanation: [a?.explanation ?? ''],
+    }) as AnswerForm;
+  }
+
+  private populateForm() {
+    // Populate form when selectedQuestion changes
+    effect(() => {
+      const q = this.question();
+      if (!q) return;
+
+      // Populate main fields
+      this.form.patchValue({
+        question: q.question,
+        explanation: q.explanation,
+        feedbackOnCorrect: q.feedbackOnCorrect,
+        feedbackOnIncorrect: q.feedbackOnIncorrect,
+      });
+
+      // Populate correctAnswers
+      const correctAnswersArray = this.form.controls.correctAnswers;
+      correctAnswersArray.clear();
+      q.answers
+        .filter((a) => a.isCorrect)
+        .forEach((a) => correctAnswersArray.push(this.createAnswerForm(a)));
+
+      // Populate incorrectAnswers
+      const incorrectAnswersArray = this.form.controls.incorrectAnswers;
+      incorrectAnswersArray.clear();
+      q.answers
+        .filter((a) => !a.isCorrect)
+        .forEach((a) => incorrectAnswersArray.push(this.createAnswerForm(a)));
+
+      // Add empty answers if no answers
+      const fv = this.form.value;
+      if (fv.correctAnswers?.length === 0) this.addNewCorrectAnswer();
+      if (fv.incorrectAnswers?.length === 0) this.addNewIncorrectAnswer();
+    });
+  }
+
+  addNewCorrectAnswer() {
+    this.form.controls.correctAnswers.push(this.createAnswerForm(null));
+  }
+
+  addNewIncorrectAnswer() {
+    this.form.controls.incorrectAnswers.push(this.createAnswerForm(null));
+  }
+
+  removeCorrectAnswer(index: number) {
+    const answers = this.form.get('correctAnswers') as FormArray<AnswerForm>;
+    answers.removeAt(index);
+  }
+
+  removeIncorrectAnswer(index: number) {
+    const answers = this.form.get('incorrectAnswers') as FormArray<AnswerForm>;
+    answers.removeAt(index);
+  }
+
+  save() {
+    const fv = this.form.value;
+    const dto: CreateUpdateQuestion = {
+      quizId: this.question().quizId,
+      question: fv.question ?? '',
+      explanation: fv.explanation ?? '',
+      feedbackOnCorrect: fv.feedbackOnCorrect ?? '',
+      feedbackOnIncorrect: fv.feedbackOnIncorrect ?? '',
+    };
+
+    if (this.question().id.length > 0) {
+      this.updateQuestion(dto);
+    } else {
+      this.createQuestion(dto);
+    }
+  }
+
+  private createQuestion(dto: CreateUpdateQuestion) {
+    this.questionApiService.createQuestion(dto).subscribe({
+      next: (q) => {
+        this.onQuestionCreated.emit(q.id);
+        this.notificationService.show('Successfully created question.', {
+          type: AlertType.green,
+        });
+      },
+      error: () =>
+        this.notificationService.show('Failed to save question!', {
+          type: AlertType.red,
+        }),
+    });
+  }
+
+  private updateQuestion(dto: CreateUpdateQuestion) {
+    this.questionApiService.updateQuestion(this.question().id, dto).subscribe({
+      next: (q) => {
+        this.onQuestionUpdated.emit(q.id);
+        this.notificationService.show('Successfully updated question.', {
+          type: AlertType.green,
+        });
+      },
+      error: () =>
+        this.notificationService.show('Failed to update question!', {
+          type: AlertType.red,
+        }),
+    });
+  }
+}

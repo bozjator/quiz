@@ -1,0 +1,53 @@
+<div class="w-full xl:w-1/2">
+  <page-section-title
+    [title]="'Theme'"
+    [description]="'Choose your preferred theme and layout.'"
+  />
+  <dl
+    class="space-y-6 divide-y divide-gray-200 text-sm leading-6 dark:divide-gray-500"
+  >
+    <div class="pt-6 sm:flex">
+      <dt class="pl-3 font-medium leading-9 sm:w-64 sm:flex-none sm:pr-6">
+        Dark theme
+      </dt>
+      <dd
+        class="mt-1 flex justify-between gap-x-6 pl-3 leading-9 sm:mt-0 sm:flex-auto"
+      >
+        <mat-slide-toggle
+          #isDarkToggle
+          [checked]="layoutService.isDarkMode()"
+          (change)="layoutService.isDarkMode.set(isDarkToggle.checked)"
+        ></mat-slide-toggle>
+      </dd>
+    </div>
+
+    <div class="pt-6 sm:flex">
+      <dt class="pl-3 font-medium leading-9 sm:w-64 sm:flex-none sm:pr-6">
+        Layout style
+      </dt>
+      <dd class="mt-1 flex justify-between gap-x-6 pl-1 sm:mt-0 sm:flex-auto">
+        <mat-radio-group
+          (change)="layoutService.layoutStyle.set($event.value)"
+          class="flex gap-4"
+        >
+          <mat-radio-button
+            [value]="layoutStyleEnum.frameless"
+            [checked]="
+              layoutService.layoutStyle() === layoutStyleEnum.frameless
+            "
+          >
+            Frameless
+          </mat-radio-button>
+          <mat-radio-button
+            [value]="layoutStyleEnum.framed"
+            [checked]="layoutService.layoutStyle() === layoutStyleEnum.framed"
+          >
+            Framed
+          </mat-radio-button>
+        </mat-radio-group>
+      </dd>
+    </div>
+
+    <div class="pt-6 sm:flex"></div>
+  </dl>
+</div>

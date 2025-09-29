@@ -1,0 +1,38 @@
+<div class="group relative w-full xl:w-1/2">
+  <div class="absolute right-4 top-6">
+    <app-icon-button
+      class="inline group-hover:inline lg:hidden"
+      [size]="20"
+      [icon]="'edit'"
+      (click)="openDialogChangePassword()"
+    />
+  </div>
+  <page-section-title
+    [marginTopPx]="32"
+    [title]="'Security'"
+    [description]="'Change your password or sign out of all devices.'"
+  />
+  <dl class="space-y-6 divide-y divide-gray-200 text-sm leading-6 dark:divide-gray-500">
+    <div class="pt-6 sm:flex">
+      <dt class="pl-3 font-medium leading-9 sm:w-64 sm:flex-none sm:pr-6">Password</dt>
+      <dd class="mt-1 flex justify-between gap-x-6 pl-3 leading-9 sm:mt-0 sm:flex-auto">
+        **********
+      </dd>
+    </div>
+
+    <div class="pt-6 sm:flex">
+      <dt class="pl-3 font-medium leading-9 sm:w-64 sm:flex-none sm:pr-6">Sign out everywhere</dt>
+      <dd class="mt-1 flex justify-between gap-x-6 pl-1 sm:mt-0 sm:flex-auto">
+        @if (signOut.apiCallInProgress()) {
+          <div class="ml-6 mt-1.5">
+            <mat-spinner [diameter]="30"></mat-spinner>
+          </div>
+        } @else {
+          <button class="app-btn-txt min-w-16" (click)="startSignOutEverywhere()">Sign out</button>
+        }
+      </dd>
+    </div>
+
+    <div class="pt-6 sm:flex"></div>
+  </dl>
+</div>

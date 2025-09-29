@@ -1,0 +1,37 @@
+<div
+  class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:flex-col"
+  [ngClass]="{
+    'lg:w-64': layoutService.layoutStyle() === layoutStyleEnum.frameless,
+    'lg:w-72': layoutService.layoutStyle() === layoutStyleEnum.framed,
+  }"
+>
+  <div
+    class="relative z-10 flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6"
+    [ngClass]="{
+      'shadow-lg ring-1 ring-white/10':
+        layoutService.layoutStyle() === layoutStyleEnum.frameless,
+      'm-4 shadow-md shadow-gray-800':
+        layoutService.layoutStyle() === layoutStyleEnum.framed,
+    }"
+  >
+    <sidebar class="z-10" />
+    <div class="z-10 mt-auto">
+      <sign-out-button />
+    </div>
+
+    <div
+      class="absolute bottom-0 left-0 z-0 h-1/3 w-full overflow-hidden leading-none"
+    >
+      <svg
+        class="relative block h-full w-full"
+        viewBox="0 0 1200 120"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,10 Q600,0 1200,30 L1200,120 L0,120 Z"
+          class="fill-gray-800/20"
+        ></path>
+      </svg>
+    </div>
+  </div>
+</div>

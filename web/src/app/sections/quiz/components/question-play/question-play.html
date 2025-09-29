@@ -1,0 +1,65 @@
+<div class="font-medium text-lg mb-4">
+  {{ question().question }}
+</div>
+@for (answer of question().answers; track answer.id) {
+  <div
+    class="p-2 mb-2 border rounded cursor-pointer"
+    [class.bg-green-100]="answer.isCorrect && isAnswered()"
+    [class.bg-red-100]="!answer.isCorrect && isAnswered()"
+    [class.border-green-500]="answer.isCorrect && isAnswered()"
+    [class.border-red-500]="!answer.isCorrect && isAnswered()"
+    [class.bg-opacity-30]="isAnswered()"
+  >
+    @if (isMultipleChoice()) {
+      <label class="cursor-pointer flex items-center gap-2">
+        <input
+          [disabled]="hasPressedAnswer()"
+          type="checkbox"
+          [checked]="selectedAnswerIds().includes(answer.id)"
+          (change)="toggleSelection(answer.id, $event.target.checked)"
+        />
+        <span>{{ answer.answer }}</span>
+      </label>
+    } @else {
+      <label class="cursor-pointer flex items-center gap-2">
+        <input
+          [disabled]="hasPressedAnswer()"
+          type="radio"
+          name="answer"
+          [checked]="selectedAnswerIds().includes(answer.id)"
+          (change)="selectSingle(answer.id)"
+        />
+        <span>{{ answer.answer }}</span>
+      </label>
+    }
+    @if (hasPressedAnswer() && answer.explanation) {
+      <div class="mt-5">
+        <small>{{ answer.explanation }}</small>
+      </div>
+    }
+  </div>
+}
+<button
+  class="app-btn"
+  [disabled]="hasPressedAnswer() || selectedAnswerIds().length === 0"
+  (click)="answerQuestion(); $event.stopPropagation()"
+>
+  Submit
+</button>
+
+@if (hasPressedAnswer()) {
+  @let feedback =
+    isCorrectlyAnswered() ? question().feedbackOnCorrect : question().feedbackOnIncorrect;
+  @if (feedback && feedback.length > 0) {
+    <div
+      class="mt-5 p-2 rounded dark:text-gray-700"
+      [ngClass]="{
+        'bg-green-50': isCorrectlyAnswered(),
+        'bg-red-50': !isCorrectlyAnswered(),
+      }"
+    >
+      {{ feedback }}
+    </div>
+  }
+  <div class="mt-5">{{ question().explanation }}</div>
+}

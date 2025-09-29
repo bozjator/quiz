@@ -1,0 +1,32 @@
+@for (q of questions(); track q.id; let index = $index) {
+  <div
+    class="cursor-pointer mb-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
+    [class.dark:text-gray-800]="selectedQuestionId() === q.id"
+    [class.bg-blue-50]="selectedQuestionId() === q.id"
+    [class.border-l-4]="selectedQuestionId() === q.id"
+    [class.border-blue-500]="selectedQuestionId() === q.id"
+    [class.border-green-500]="
+      q.id in questionAnswerStates() &&
+      questionAnswerStates()[q.id].answered &&
+      questionAnswerStates()[q.id].isCorrect &&
+      selectedQuestionId() !== q.id
+    "
+    (click)="selectQuestion(q.id)"
+  >
+    <div class="flex gap-1">
+      <span class="font-medium">{{ index + 1 }}.</span>
+
+      @if (q.id in questionAnswerStates() && questionAnswerStates()[q.id].answered) {
+        <div class="pt-0.5">
+          @if (questionAnswerStates()[q.id].isCorrect) {
+            <mat-icon class="text-green-500 text-[22px]">check_circle</mat-icon>
+          } @else {
+            <mat-icon class="text-red-500 text-[22px]">cancel</mat-icon>
+          }
+        </div>
+      }
+
+      <span class="line-clamp-2">{{ q.question }}</span>
+    </div>
+  </div>
+}

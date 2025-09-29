@@ -1,0 +1,46 @@
+<div class="relative z-50 lg:hidden">
+  <div
+    class="fixed inset-0 bg-gray-900/80"
+    [@opacityAnimation]
+    *ngIf="layoutService.isMobileSidebarVisible()"
+  ></div>
+  <div
+    class="fixed inset-0 flex"
+    [@leftSideAnimation]
+    *ngIf="layoutService.isMobileSidebarVisible()"
+  >
+    <div class="relative mr-16 flex w-full max-w-xs flex-1">
+      <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+        <button
+          type="button"
+          class="-m-2.5 -mt-3 p-2.5"
+          (click)="layoutService.isMobileSidebarVisible.set(false)"
+        >
+          <span class="sr-only">Close sidebar</span>
+          <svg
+            class="h-6 w-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div
+        class="relative z-10 flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10"
+      >
+        <sidebar class="z-10" />
+        <div class="z-10 mt-auto">
+          <sign-out-button />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
