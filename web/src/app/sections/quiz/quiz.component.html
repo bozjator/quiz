@@ -12,7 +12,9 @@
             {{ quizPlayService.stats().correctCount }} /
             {{ quizPlayService.stats().answeredCount }} — {{ quizPlayService.stats().percentage }}%
           </div>
-        } @else if (questions().length > 0 && questions()[0].id !== '') {
+        } @else if (
+          questions().length === 0 || (questions().length > 0 && questions()[0].id !== '')
+        ) {
           <app-icon-button [size]="20" [icon]="'add'" (click)="addNewQuestion()" />
         }
       </div>
