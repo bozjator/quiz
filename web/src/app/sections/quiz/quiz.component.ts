@@ -87,8 +87,9 @@ export class QuizComponent {
         else this.selectFirstQuestion();
       });
     } else {
+      const questionsToPlayCount = 30;
       this.questionApiService
-        .getQuestionsByQuizIdToPlay(this.quizId(), 1000, QuizType.reinforcement)
+        .getQuestionsByQuizIdToPlay(this.quizId(), questionsToPlayCount, QuizType.reinforcement)
         .subscribe((questions) => {
           this.questions.set(questions);
           if (questionIdToSelect) this.selectQuestion(questionIdToSelect);
