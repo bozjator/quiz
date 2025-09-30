@@ -7,23 +7,35 @@ import { Quiz } from './dtos/quiz.dto';
 import { UserInRequest } from 'src/auth/models/user-in-request.model';
 import { ReqUser } from 'src/auth/decorators/req-user.decorator';
 
-@AuthUser()
 @ApiTags('quiz')
 @Controller('quiz')
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 
   @ApiOperation({
-    summary: 'Get all quizzes.',
+    summary: 'Get all public quizzes that are published.',
   })
   @ApiCreatedResponse({
     type: [Quiz],
   })
-  @Get()
-  getAll() {
-    return this.quizService.getQuizzes();
+  @Get('public')
+  getPublicQuizzes() {
+    return this.quizService.getPublicQuizzes();
   }
 
+  @AuthUser()
+  @ApiOperation({
+    summary: 'Get all user quizzes.',
+  })
+  @ApiCreatedResponse({
+    type: [Quiz],
+  })
+  @Get('/user')
+  getUserQuizzes(@ReqUser() user: UserInRequest) {
+    return this.quizService.getUserQuizzes(user.id);
+  }
+
+  @AuthUser()
   @ApiOperation({
     summary: 'Create quiz.',
   })

@@ -1,20 +1,41 @@
-<div class="quiz-list">
-  @for (quiz of quizzes(); track quiz.id) {
+<div class="mb-12">
+  <span class="font-medium text-l">Public quizzes</span>
+  @for (quiz of publicQuizzes(); track quiz.id) {
     <div class="flex items-center p-4 border-b border-gray-200">
       <a
-        class="mr-4 flex items-center"
-        [routerLink]="['/quiz', quiz.id, 'edit']"
-        [queryParams]="{ title: quiz.title }"
-      >
-        <mat-icon>edit</mat-icon>
-      </a>
-      <a
-        class="cursor-pointer font-medium hover:underline"
+        class="cursor-pointer hover:underline"
         [routerLink]="['/quiz', quiz.id]"
         [queryParams]="{ title: quiz.title }"
         >{{ quiz.title }}</a
       >
     </div>
+  }
+  @if (publicQuizzes().length === 0) {
+    <div>No public quizzes published at the moment.</div>
+  }
+</div>
+
+<div>
+  <span class="font-medium text-l">Your quizzes</span>
+  @for (quiz of userQuizzes(); track quiz.id) {
+    <div class="flex items-center p-4 border-b border-gray-200">
+      <app-icon-button
+        class="mr-4 flex items-center"
+        [routerLink]="['/quiz', quiz.id, 'edit']"
+        [queryParams]="{ title: quiz.title }"
+        [size]="20"
+        [icon]="'edit'"
+      />
+      <a
+        class="cursor-pointer hover:underline"
+        [routerLink]="['/quiz', quiz.id]"
+        [queryParams]="{ title: quiz.title }"
+        >{{ quiz.title }}</a
+      >
+    </div>
+  }
+  @if (userQuizzes().length === 0) {
+    <div>You do not have an quiz yet.</div>
   }
 </div>
 

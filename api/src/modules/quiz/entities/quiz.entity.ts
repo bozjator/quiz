@@ -10,6 +10,15 @@ import {
 import { QuestionEntity } from 'src/modules/question/entities/question.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 
+const columnUserId: keyof QuizEntity = 'userId';
+const columnIsPublished: keyof QuizEntity = 'isPublished';
+const columnIsPublic: keyof QuizEntity = 'isPublic';
+export const COLUMN_QUIZ = {
+  userId: columnUserId,
+  isPublished: columnIsPublished,
+  isPublic: columnIsPublic,
+};
+
 @Table({ tableName: 'quiz' })
 export class QuizEntity extends Model {
   @Column({

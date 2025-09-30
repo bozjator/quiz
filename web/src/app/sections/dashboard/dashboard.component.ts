@@ -6,11 +6,12 @@ import { Quiz } from '../../shared/models/quiz/quiz.model';
 import { MatIconModule } from '@angular/material/icon';
 import { NotificationService } from '../../shared/components/others/notification/notification.service';
 import { AlertType } from '../../shared/components/alert.component';
+import { IconButtonComponent } from '../../shared/components/buttons/icon-button.component';
 
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.component.html',
-  imports: [RouterModule, MatIconModule],
+  imports: [RouterModule, MatIconModule, IconButtonComponent],
 })
 export class DashboardComponent {
   layoutService = inject(LayoutService);
@@ -18,7 +19,8 @@ export class DashboardComponent {
   private notificationService = inject(NotificationService);
 
   showCreateQuizForm = signal(false);
-  quizzes = signal<Quiz[]>([]);
+  userQuizzes = signal<Quiz[]>([]);
+  publicQuizzes = signal<Quiz[]>([]);
 
   constructor() {
     this.layoutService.setPageTitle('Dashboard', 'home');
@@ -26,8 +28,11 @@ export class DashboardComponent {
   }
 
   private loadQuizzes() {
-    this.quizApiService.getQuizzes().subscribe((quizzes) => {
-      this.quizzes.set(quizzes);
+    this.quizApiService.getUserQuizzes().subscribe((quizzes) => {
+      this.userQuizzes.set(quizzes);
+    });
+    this.quizApiService.getPublicQuizzes().subscribe((quizzes) => {
+      this.publicQuizzes.set(quizzes);
     });
   }
 

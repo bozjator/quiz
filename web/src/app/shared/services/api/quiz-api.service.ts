@@ -11,8 +11,12 @@ export class QuizApiService extends AppHttpService {
     super('quiz');
   }
 
-  public getQuizzes() {
-    return this.http.get<Quiz[]>(this.url(''));
+  public getPublicQuizzes() {
+    return this.http.get<Quiz[]>(this.url('public'));
+  }
+
+  public getUserQuizzes() {
+    return this.http.get<Quiz[]>(this.url('user'));
   }
 
   public createQuiz(name: string) {
