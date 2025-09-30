@@ -28,6 +28,7 @@
       /></span>
 
       <!-- List of correct answers -->
+      @let correctAnswersCount = form.controls.correctAnswers.controls.length;
       @for (answer of form.controls.correctAnswers.controls; track $index; let i = $index) {
         <div [formGroup]="answer" class="flex gap-2 items-start">
           <!-- Answer text -->
@@ -45,12 +46,14 @@
           />
 
           <!-- Delete button -->
-          <app-icon-button
-            class="mt-1.5"
-            [size]="20"
-            [icon]="'remove'"
-            (click)="removeCorrectAnswer(i)"
-          />
+          @if (correctAnswersCount > 1) {
+            <app-icon-button
+              class="mt-1.5"
+              [size]="20"
+              [icon]="'remove'"
+              (click)="removeCorrectAnswer(i)"
+            />
+          }
         </div>
       }
     </div>
@@ -85,6 +88,7 @@
       /></span>
 
       <!-- List of incorrect answers -->
+      @let incorrectAnswersCount = form.controls.incorrectAnswers.controls.length;
       @for (answer of form.controls.incorrectAnswers.controls; track $index; let i = $index) {
         <div [formGroup]="answer" class="flex gap-2 items-start">
           <!-- Answer text -->
@@ -102,12 +106,14 @@
           />
 
           <!-- Delete button -->
-          <app-icon-button
-            class="mt-1.5"
-            [size]="20"
-            [icon]="'remove'"
-            (click)="removeIncorrectAnswer(i)"
-          />
+          @if (incorrectAnswersCount > 1) {
+            <app-icon-button
+              class="mt-1.5"
+              [size]="20"
+              [icon]="'remove'"
+              (click)="removeIncorrectAnswer(i)"
+            />
+          }
         </div>
       }
     </div>
