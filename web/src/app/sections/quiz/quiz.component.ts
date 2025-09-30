@@ -10,6 +10,10 @@ import { QuestionForm } from './components/question-form/question-form';
 import { QuizPlayService } from './services/quiz-play.service';
 import { QuizEditService } from './services/quiz-edit.service';
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button.component';
+import { QuizApiService } from '../../shared/services/api/quiz-api.service';
+import { NotificationService } from '../../shared/components/others/notification/notification.service';
+import { AlertType } from '../../shared/components/alert.component';
+import { Quiz } from '../../shared/models/quiz/quiz.model';
 
 @Component({
   selector: 'quiz',
@@ -19,12 +23,15 @@ import { IconButtonComponent } from '../../shared/components/buttons/icon-button
 export class QuizComponent {
   private route = inject(ActivatedRoute);
   private layoutService = inject(LayoutService);
+  private notificationService = inject(NotificationService);
   private questionApiService = inject(QuestionApiService);
+  private quizApiService = inject(QuizApiService);
 
   quizPlayService = new QuizPlayService();
   quizEditService = new QuizEditService();
 
   quizId = signal<string>('');
+  quiz = signal<Quiz | null>(null);
   isEditMode = signal<boolean>(false);
   questions = signal<Question[]>([]);
 
@@ -34,20 +41,31 @@ export class QuizComponent {
   );
 
   constructor() {
-    this.route.queryParamMap.subscribe((params) => {
-      const title = params.get('title');
-      this.layoutService.setPageTitle(`Quiz - ${title}`, 'quiz');
-    });
-
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       this.quizId.set(id ?? '');
+
+      if (this.quizId()) this.loadQuiz(this.quizId());
 
       // Detect edit mode from route
       const url = this.route.snapshot.url.map((u) => u.path);
       this.isEditMode.set(url.includes('edit'));
 
       this.loadQuestions(null);
+    });
+  }
+
+  private loadQuiz(id: string) {
+    this.quizApiService.getQuiz(id).subscribe({
+      next: (quiz) => {
+        this.quiz.set(quiz);
+        this.layoutService.setPageTitle(`Quiz - ${quiz.title}`, 'quiz');
+      },
+      error: () => {
+        this.notificationService.show('Failed to get quiz data.', {
+          type: AlertType.red,
+        });
+      },
     });
   }
 
@@ -93,5 +111,18 @@ export class QuizComponent {
     };
     this.questions.set([newQuestion, ...this.questions()]);
     this.selectedQuestionId.set(newQuestion.id);
+  }
+
+  updateQuiz(dto: Partial<Quiz>) {
+    this.quizApiService.updateQuiz(this.quizId(), dto).subscribe({
+      next: () => {
+        this.loadQuiz(this.quizId());
+      },
+      error: () => {
+        this.notificationService.show('Failed to update quiz data.', {
+          type: AlertType.red,
+        });
+      },
+    });
   }
 }

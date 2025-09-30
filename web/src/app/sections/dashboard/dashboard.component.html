@@ -22,16 +22,12 @@
       <app-icon-button
         class="mr-4 flex items-center"
         [routerLink]="['/quiz', quiz.id, 'edit']"
-        [queryParams]="{ title: quiz.title }"
         [size]="20"
         [icon]="'edit'"
       />
-      <a
-        class="cursor-pointer hover:underline"
-        [routerLink]="['/quiz', quiz.id]"
-        [queryParams]="{ title: quiz.title }"
-        >{{ quiz.title }}</a
-      >
+      <a class="cursor-pointer hover:underline" [routerLink]="['/quiz', quiz.id]">{{
+        quiz.title
+      }}</a>
     </div>
   }
   @if (userQuizzes().length === 0) {

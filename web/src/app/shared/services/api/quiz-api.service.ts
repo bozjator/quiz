@@ -11,6 +11,10 @@ export class QuizApiService extends AppHttpService {
     super('quiz');
   }
 
+  public getQuiz(id: string) {
+    return this.http.get<Quiz>(this.url(id));
+  }
+
   public getPublicQuizzes() {
     return this.http.get<Quiz[]>(this.url('public'));
   }
@@ -24,5 +28,9 @@ export class QuizApiService extends AppHttpService {
       title: name,
     };
     return this.http.post(this.url(''), dto);
+  }
+
+  public updateQuiz(id: string, dto: Partial<Quiz>) {
+    return this.http.patch(this.url(id), dto);
   }
 }
