@@ -1,9 +1,6 @@
-export interface Answer {
-  id: string;
+export interface CreateUpdateAnswer {
   questionId: string;
   answer: string;
   explanation: string;
   isCorrect: boolean;
-  createdAt: string;
-  updatedAt: string;
 }

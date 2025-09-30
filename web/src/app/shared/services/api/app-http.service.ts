@@ -2,13 +2,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 
 export class AppHttpService {
-  protected readonly http: HttpClient;
+  protected readonly http: HttpClient = inject(HttpClient);
 
   private readonly apiUrl = 'http://localhost:3000'; // TODO: Move to environment variable
   private readonly apiUrlAndBasePath;
 
   constructor(private readonly basePath: string) {
-    this.http = inject(HttpClient);
     this.apiUrlAndBasePath = `${this.apiUrl}/${this.basePath}`;
   }
 

@@ -17,12 +17,15 @@ import { AlertType } from '../../../../shared/components/alert.component';
 import { INPUT_LENGTHS } from '../../../../app.config';
 import { Answer } from '../../../../shared/models/quiz/answer.model';
 import { IconButtonComponent } from '../../../../shared/components/buttons/icon-button.component';
+import { AnswerApiService } from '../../../../shared/services/api/answer-api.service';
+import { CreateUpdateAnswer } from '../../../../shared/models/quiz/create-update-answer.model';
 
-export type AnswerForm = FormGroup<{
+type AnswerForm = FormGroup<{
   id: FormControl<string>;
   answer: FormControl<string>;
   explanation: FormControl<string>;
 }>;
+type AnswerFormValue = ReturnType<AnswerForm['getRawValue']>;
 
 interface IQuestionForm {
   question: FormControl<string | null>;
@@ -41,6 +44,7 @@ interface IQuestionForm {
 export class QuestionForm {
   private fb = inject(FormBuilder);
   private questionApiService = inject(QuestionApiService);
+  private answerApiService = inject(AnswerApiService);
   private notificationService = inject(NotificationService);
 
   readonly question = input.required<Question>();
@@ -125,6 +129,7 @@ export class QuestionForm {
   }
 
   save() {
+    // TODO show update / create progress indicator and hide it once all calls are done.
     const fv = this.form.value;
     const dto: CreateUpdateQuestion = {
       quizId: this.question().quizId,
@@ -141,13 +146,82 @@ export class QuestionForm {
     }
   }
 
+  private saveAnswers(questionId: string, callback: () => void) {
+    const aFormToAnswer = (isCorrect: boolean, aForm: Partial<AnswerFormValue>) => {
+      return {
+        id: aForm.id || '',
+        questionId: questionId,
+        answer: aForm.answer || '',
+        explanation: aForm.explanation || '',
+        isCorrect,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    };
+
+    const answerToUpdateCreateDTO = (a: Answer): CreateUpdateAnswer => {
+      return {
+        questionId: a.questionId,
+        answer: a.answer,
+        explanation: a.explanation,
+        isCorrect: a.isCorrect,
+      };
+    };
+
+    const fv = this.form.value;
+    const answersCorrect = (fv.correctAnswers ?? []).map((a): Answer => aFormToAnswer(true, a));
+    const answersIncorrect = (fv.incorrectAnswers ?? []).map(
+      (a): Answer => aFormToAnswer(false, a),
+    );
+    const answers = [...answersCorrect, ...answersIncorrect];
+
+    // Answers to create, update & delete.
+    const answersToCreate = answers.filter((a) => a.id.length === 0);
+    const answersToUpdate = answers.filter((a) => a.id.length > 0);
+    const answersToDelete = this.question().answers.filter(
+      (oldAnswer) => !answersToUpdate.some((newAnswer) => newAnswer.id === oldAnswer.id),
+    );
+
+    // Bulk create.
+    if (answersToCreate.length > 0)
+      this.answerApiService.createBulk(answersToCreate.map(answerToUpdateCreateDTO)).subscribe({
+        error: () =>
+          this.notificationService.show('Failed to create new answers!', {
+            type: AlertType.red,
+          }),
+      });
+
+    // Update each answer.
+    if (answersToUpdate.length > 0)
+      for (const a of answersToUpdate)
+        this.answerApiService.update(a.id, answerToUpdateCreateDTO(a)).subscribe({
+          error: () =>
+            this.notificationService.show('Failed to update answer!', {
+              type: AlertType.red,
+            }),
+        });
+
+    // Delete each answer.
+    if (answersToDelete.length > 0)
+      for (const a of answersToDelete)
+        this.answerApiService.delete(a.id).subscribe({
+          error: () =>
+            this.notificationService.show('Failed to delete answer!', {
+              type: AlertType.red,
+            }),
+        });
+
+    // TODO call callback function once all calls are done (successfully or not).
+  }
+
   private createQuestion(dto: CreateUpdateQuestion) {
     this.questionApiService.createQuestion(dto).subscribe({
       next: (q) => {
-        this.onQuestionCreated.emit(q.id);
         this.notificationService.show('Successfully created question.', {
           type: AlertType.green,
         });
+        const callback = () => this.onQuestionCreated.emit(q.id);
+        this.saveAnswers(q.id, callback);
       },
       error: () =>
         this.notificationService.show('Failed to save question!', {
@@ -157,12 +231,14 @@ export class QuestionForm {
   }
 
   private updateQuestion(dto: CreateUpdateQuestion) {
-    this.questionApiService.updateQuestion(this.question().id, dto).subscribe({
+    const questionId = this.question().id;
+    this.questionApiService.updateQuestion(questionId, dto).subscribe({
       next: (q) => {
-        this.onQuestionUpdated.emit(q.id);
         this.notificationService.show('Successfully updated question.', {
           type: AlertType.green,
         });
+        const callback = () => this.onQuestionUpdated.emit(q.id);
+        this.saveAnswers(questionId, callback);
       },
       error: () =>
         this.notificationService.show('Failed to update question!', {
