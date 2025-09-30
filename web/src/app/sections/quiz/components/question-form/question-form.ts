@@ -9,6 +9,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Question } from '../../../../shared/models/quiz/question.model';
 import { CreateUpdateQuestion } from '../../../../shared/models/quiz/create-update-question.model';
 import { QuestionApiService } from '../../../../shared/services/api/question-api.service';
@@ -147,71 +149,75 @@ export class QuestionForm {
   }
 
   private saveAnswers(questionId: string, callback: () => void) {
-    const aFormToAnswer = (isCorrect: boolean, aForm: Partial<AnswerFormValue>) => {
-      return {
-        id: aForm.id || '',
-        questionId: questionId,
-        answer: aForm.answer || '',
-        explanation: aForm.explanation || '',
-        isCorrect,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-    };
+    const aFormToAnswer = (isCorrect: boolean, aForm: Partial<AnswerFormValue>) => ({
+      id: aForm.id || '',
+      questionId,
+      answer: aForm.answer || '',
+      explanation: aForm.explanation || '',
+      isCorrect,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
 
-    const answerToUpdateCreateDTO = (a: Answer): CreateUpdateAnswer => {
-      return {
-        questionId: a.questionId,
-        answer: a.answer,
-        explanation: a.explanation,
-        isCorrect: a.isCorrect,
-      };
-    };
+    const answerToUpdateCreateDTO = (a: Answer): CreateUpdateAnswer => ({
+      questionId: a.questionId,
+      answer: a.answer,
+      explanation: a.explanation,
+      isCorrect: a.isCorrect,
+    });
 
     const fv = this.form.value;
-    const answersCorrect = (fv.correctAnswers ?? []).map((a): Answer => aFormToAnswer(true, a));
-    const answersIncorrect = (fv.incorrectAnswers ?? []).map(
-      (a): Answer => aFormToAnswer(false, a),
-    );
+    const answersCorrect = (fv.correctAnswers ?? []).map((a) => aFormToAnswer(true, a));
+    const answersIncorrect = (fv.incorrectAnswers ?? []).map((a) => aFormToAnswer(false, a));
     const answers = [...answersCorrect, ...answersIncorrect];
 
-    // Answers to create, update & delete.
     const answersToCreate = answers.filter((a) => a.id.length === 0);
     const answersToUpdate = answers.filter((a) => a.id.length > 0);
     const answersToDelete = this.question().answers.filter(
       (oldAnswer) => !answersToUpdate.some((newAnswer) => newAnswer.id === oldAnswer.id),
     );
 
-    // Bulk create.
-    if (answersToCreate.length > 0)
-      this.answerApiService.createBulk(answersToCreate.map(answerToUpdateCreateDTO)).subscribe({
-        error: () =>
-          this.notificationService.show('Failed to create new answers!', {
-            type: AlertType.red,
+    // Build all Observables
+    const create$ = answersToCreate.length
+      ? this.answerApiService.createBulk(answersToCreate.map(answerToUpdateCreateDTO)).pipe(
+          catchError(() => {
+            this.notificationService.show('Failed to create new answers!', { type: AlertType.red });
+            return of(null);
           }),
-      });
+        )
+      : of(null);
 
-    // Update each answer.
-    if (answersToUpdate.length > 0)
-      for (const a of answersToUpdate)
-        this.answerApiService.update(a.id, answerToUpdateCreateDTO(a)).subscribe({
-          error: () =>
-            this.notificationService.show('Failed to update answer!', {
-              type: AlertType.red,
-            }),
-        });
+    const update$ = answersToUpdate.length
+      ? forkJoin(
+          answersToUpdate.map((a) =>
+            this.answerApiService.update(a.id, answerToUpdateCreateDTO(a)).pipe(
+              catchError(() => {
+                this.notificationService.show('Failed to update answer!', { type: AlertType.red });
+                return of(null);
+              }),
+            ),
+          ),
+        )
+      : of(null);
 
-    // Delete each answer.
-    if (answersToDelete.length > 0)
-      for (const a of answersToDelete)
-        this.answerApiService.delete(a.id).subscribe({
-          error: () =>
-            this.notificationService.show('Failed to delete answer!', {
-              type: AlertType.red,
-            }),
-        });
+    const delete$ = answersToDelete.length
+      ? forkJoin(
+          answersToDelete.map((a) =>
+            this.answerApiService.delete(a.id).pipe(
+              catchError(() => {
+                this.notificationService.show('Failed to delete answer!', { type: AlertType.red });
+                return of(null);
+              }),
+            ),
+          ),
+        )
+      : of(null);
 
-    // TODO call callback function once all calls are done (successfully or not).
+    // Wait for all API calls
+    forkJoin([create$, update$, delete$]).subscribe({
+      next: () => callback(),
+      error: () => callback(), // should not happen due to catchError, but just in case
+    });
   }
 
   private createQuestion(dto: CreateUpdateQuestion) {
