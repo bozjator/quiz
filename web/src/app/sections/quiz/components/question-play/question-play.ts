@@ -36,6 +36,7 @@ export class QuestionPlay {
   });
 
   isMultipleChoice = computed(() => this.question().answers.filter((a) => a.isCorrect).length > 1);
+  correctAnswersCount = computed(() => this.question().answers.filter((a) => a.isCorrect).length);
 
   constructor() {
     let previousQuestionId: string | null = null;

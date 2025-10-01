@@ -1,6 +1,10 @@
 <div class="font-medium text-lg mb-4">
   {{ question().question }}
 </div>
+@if (correctAnswersCount() > 1) {
+  <div class="mb-4 italic text-sm text-gray-500">Select {{ correctAnswersCount() }} answers.</div>
+}
+
 @for (answer of question().answers; track answer.id) {
   <div
     class="p-2 mb-2 border rounded cursor-pointer"
@@ -41,7 +45,7 @@
 }
 <button
   class="app-btn"
-  [disabled]="hasPressedAnswer() || selectedAnswerIds().length === 0"
+  [disabled]="hasPressedAnswer() || selectedAnswerIds().length < correctAnswersCount()"
   (click)="answerQuestion(); $event.stopPropagation()"
 >
   Submit
