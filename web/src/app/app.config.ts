@@ -39,7 +39,7 @@ export const INPUT_LENGTHS = {
   min: {
     password: 8,
     question: 10,
-    answer: 10,
+    answer: 1,
   },
   max: {
     password: 50,
