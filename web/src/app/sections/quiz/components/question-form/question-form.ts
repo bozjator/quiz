@@ -130,8 +130,27 @@ export class QuestionForm {
     answers.removeAt(index);
   }
 
+  private checkAnswersForDuplicates(): boolean {
+    const fv = this.form.value;
+    const allAnswers = [
+      ...(fv.correctAnswers ?? []).map((a) => (a.answer || '').trim().toLowerCase()),
+      ...(fv.incorrectAnswers ?? []).map((a) => (a.answer || '').trim().toLowerCase()),
+    ];
+
+    const hasDuplicates = new Set(allAnswers).size !== allAnswers.length;
+    if (hasDuplicates) {
+      this.notificationService.show('Duplicate answers found!', { type: AlertType.red });
+    }
+
+    return hasDuplicates;
+  }
+
   save() {
     // TODO show update / create progress indicator and hide it once all calls are done.
+
+    const answersHaveDuplicates = this.checkAnswersForDuplicates();
+    if (answersHaveDuplicates) return;
+
     const fv = this.form.value;
     const dto: CreateUpdateQuestion = {
       quizId: this.question().quizId,
