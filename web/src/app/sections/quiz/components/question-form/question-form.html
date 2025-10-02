@@ -139,5 +139,13 @@
     ></textarea>
   </label>
 
-  <button [disabled]="!form.valid" (click)="save()" class="app-btn self-start">Save</button>
+  <div class="flex items-center gap-2">
+    <button [disabled]="!form.valid || apiCallInProgress()" (click)="save()" class="app-btn">
+      Save
+    </button>
+
+    @if (apiCallInProgress()) {
+      <mat-spinner [diameter]="20"></mat-spinner>
+    }
+  </div>
 </form>

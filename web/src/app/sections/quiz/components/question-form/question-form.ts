@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import {
@@ -9,8 +9,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { Question } from '../../../../shared/models/quiz/question.model';
 import { CreateUpdateQuestion } from '../../../../shared/models/quiz/create-update-question.model';
 import { QuestionApiService } from '../../../../shared/services/api/question-api.service';
@@ -40,7 +41,13 @@ interface IQuestionForm {
 
 @Component({
   selector: 'app-question-form',
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule, IconButtonComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    IconButtonComponent,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './question-form.html',
 })
 export class QuestionForm {
@@ -52,6 +59,8 @@ export class QuestionForm {
   readonly question = input.required<Question>();
   readonly onQuestionCreated = output<string>();
   readonly onQuestionUpdated = output<string>();
+
+  readonly apiCallInProgress = signal<boolean>(false);
 
   form: FormGroup<IQuestionForm> = this.fb.group({
     question: ['', [Validators.required, Validators.minLength(INPUT_LENGTHS.min.question)]],
@@ -146,10 +155,10 @@ export class QuestionForm {
   }
 
   save() {
-    // TODO show update / create progress indicator and hide it once all calls are done.
-
     const answersHaveDuplicates = this.checkAnswersForDuplicates();
     if (answersHaveDuplicates) return;
+
+    this.apiCallInProgress.set(true);
 
     const fv = this.form.value;
     const dto: CreateUpdateQuestion = {
@@ -233,10 +242,12 @@ export class QuestionForm {
       : of(null);
 
     // Wait for all API calls
-    forkJoin([create$, update$, delete$]).subscribe({
-      next: () => callback(),
-      error: () => callback(), // should not happen due to catchError, but just in case
-    });
+    forkJoin([create$, update$, delete$])
+      .pipe(finalize(() => this.apiCallInProgress.set(false)))
+      .subscribe({
+        next: () => callback(),
+        error: () => callback(), // should not happen due to catchError, but just in case
+      });
   }
 
   private createQuestion(dto: CreateUpdateQuestion) {
