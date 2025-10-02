@@ -22,17 +22,24 @@ export class DashboardComponent {
   userQuizzes = signal<Quiz[]>([]);
   publicQuizzes = signal<Quiz[]>([]);
 
+  apiCallLoadingUserQuizzes = signal(false);
+  apiCallLoadingPublicQuizzes = signal(false);
+
   constructor() {
     this.layoutService.setPageTitle('Dashboard', 'home');
     this.loadQuizzes();
   }
 
   private loadQuizzes() {
+    this.apiCallLoadingUserQuizzes.set(true);
+    this.apiCallLoadingPublicQuizzes.set(true);
     this.quizApiService.getUserQuizzes().subscribe((quizzes) => {
       this.userQuizzes.set(quizzes);
+      this.apiCallLoadingUserQuizzes.set(false);
     });
     this.quizApiService.getPublicQuizzes().subscribe((quizzes) => {
       this.publicQuizzes.set(quizzes);
+      this.apiCallLoadingPublicQuizzes.set(false);
     });
   }
 

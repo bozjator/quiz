@@ -79,6 +79,7 @@ export class QuizComponent {
       this.selectedQuestionId.set(qs[0].id);
     }
   }
+
   loadQuestions(questionIdToSelect: string | null) {
     if (this.isEditMode()) {
       this.questionApiService.getQuestionsByQuizId(this.quizId()).subscribe((questions) => {

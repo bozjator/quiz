@@ -10,8 +10,12 @@
       >
     </div>
   }
-  @if (publicQuizzes().length === 0) {
-    <div>No public quizzes published at the moment.</div>
+  @if (apiCallLoadingPublicQuizzes()) {
+    <div>Loading public quizzes...</div>
+  } @else if (publicQuizzes().length === 0) {
+    <div class="text-gray-500 dark:text-gray-400 text-sm mt-2">
+      No public quizzes published at the moment.
+    </div>
   }
 </div>
 
@@ -30,8 +34,12 @@
       }}</a>
     </div>
   }
-  @if (userQuizzes().length === 0) {
-    <div>You do not have an quiz yet.</div>
+  @if (apiCallLoadingUserQuizzes()) {
+    <div>Loading your quizzes...</div>
+  } @else if (userQuizzes().length === 0) {
+    <div class="text-gray-500 dark:text-gray-400 text-sm mt-2">
+      You do not have any quizzes yet.
+    </div>
   }
 </div>
 
