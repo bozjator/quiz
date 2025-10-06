@@ -1,15 +1,37 @@
 <div class="mb-12">
   <span class="font-medium text-l">Public quizzes</span>
-  @for (quiz of publicQuizzes(); track quiz.id) {
-    <div class="flex items-center p-4 border-b border-gray-200">
-      <a
-        class="cursor-pointer hover:underline"
-        [routerLink]="['/quiz', quiz.id]"
-        [queryParams]="{ title: quiz.title }"
-        >{{ quiz.title }}</a
-      >
-    </div>
-  }
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="border-b border-gray-300">
+        <th class="text-left p-3">Title</th>
+        <th class="text-left p-3">Total Questions</th>
+        <th class="text-left p-3">Not Answered</th>
+        <th class="text-left p-3">Positive Reinforcement</th>
+        <th class="text-left p-3">Negative Reinforcement</th>
+        <th class="text-left p-3">Neutral Reinforcement</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (quiz of publicQuizzes(); track quiz.id) {
+        <tr class="border-b border-gray-200 dark:hover:bg-gray-700 hover:bg-gray-100">
+          <td class="p-3">
+            <a
+              class="cursor-pointer hover:underline dark:text-gray-200"
+              [routerLink]="['/quiz', quiz.id]"
+              [queryParams]="{ title: quiz.title }"
+            >
+              {{ quiz.title }}
+            </a>
+          </td>
+          <td class="p-3">{{ quiz.userProgress?.totalQuestions }}</td>
+          <td class="p-3">{{ quiz.userProgress?.notAnswered }}</td>
+          <td class="p-3">{{ quiz.userProgress?.positiveReinforcement }}</td>
+          <td class="p-3">{{ quiz.userProgress?.negativeReinforcement }}</td>
+          <td class="p-3">{{ quiz.userProgress?.neutralReinforcement }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
   @if (apiCallLoadingPublicQuizzes()) {
     <div>Loading public quizzes...</div>
   } @else if (publicQuizzes().length === 0) {

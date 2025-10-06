@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { LayoutService } from '../../layout/layout.service';
 import { QuizApiService } from '../../shared/services/api/quiz-api.service';
-import { RouterModule } from '@angular/router';
 import { Quiz } from '../../shared/models/quiz/quiz.model';
-import { MatIconModule } from '@angular/material/icon';
 import { NotificationService } from '../../shared/components/others/notification/notification.service';
 import { AlertType } from '../../shared/components/alert.component';
 import { IconButtonComponent } from '../../shared/components/buttons/icon-button.component';
@@ -37,7 +37,7 @@ export class DashboardComponent {
       this.userQuizzes.set(quizzes);
       this.apiCallLoadingUserQuizzes.set(false);
     });
-    this.quizApiService.getPublicQuizzes().subscribe((quizzes) => {
+    this.quizApiService.getPublicQuizzesWithUserProgress().subscribe((quizzes) => {
       this.publicQuizzes.set(quizzes);
       this.apiCallLoadingPublicQuizzes.set(false);
     });
