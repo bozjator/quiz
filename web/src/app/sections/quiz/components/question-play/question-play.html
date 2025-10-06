@@ -13,6 +13,7 @@
     [class.border-green-500]="answer.isCorrect && isAnswered()"
     [class.border-red-500]="!answer.isCorrect && isAnswered()"
     [class.bg-opacity-30]="isAnswered()"
+    [class.border-blue-200]="!isAnswered() && selectedAnswerIds().includes(answer.id)"
   >
     @if (isMultipleChoice()) {
       <label class="cursor-pointer flex items-center gap-2">
