@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { QuizUserProgress } from './quiz-user-progress.dto';
 
 export class Quiz {
   @ApiProperty()
@@ -21,4 +22,7 @@ export class Quiz {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty()
+  userProgress?: QuizUserProgress;
 }

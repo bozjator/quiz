@@ -6,6 +6,7 @@ import { UpdateQuiz } from './dtos/update-quiz.dto';
 import { QuestionEntity } from '../question/entities/question.entity';
 import { UserQuestionProgressEntity } from '../question/entities/user-question-progress.entity';
 import { QuizUserProgress } from './dtos/quiz-user-progress.dto';
+import { Quiz } from './dtos/quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -20,10 +21,25 @@ export class QuizService {
     return this.quizEntity.findByPk(id);
   }
 
-  async getPublicQuizzes(): Promise<QuizEntity[]> {
-    return this.quizEntity.findAll({
+  async getPublicQuizzes(userId?: number) {
+    const quizzes = await this.quizEntity.findAll({
       where: { [COLUMN_QUIZ.isPublic]: true, [COLUMN_QUIZ.isPublished]: true },
     });
+
+    if (!userId) return quizzes;
+
+    const quizzesWithProgress = [];
+
+    for (const quiz of quizzes) {
+      const progress = await this.getUserQuizProgress(quiz.id, userId);
+      const quizWithProgress: Quiz = {
+        ...quiz.toJSON(),
+        userProgress: progress,
+      };
+      quizzesWithProgress.push(quizWithProgress);
+    }
+
+    return quizzesWithProgress;
   }
 
   async getUserQuizzes(userId: number): Promise<QuizEntity[]> {

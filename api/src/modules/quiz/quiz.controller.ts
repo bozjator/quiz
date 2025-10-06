@@ -43,6 +43,19 @@ export class QuizController {
 
   @AuthUser()
   @ApiOperation({
+    summary:
+      'Get all public quizzes that are published together with current user progress.',
+  })
+  @ApiOkResponse({
+    type: [Quiz],
+  })
+  @Get('public/with-user-progress')
+  getPublicQuizzesWithUserProgress(@ReqUser() user: UserInRequest) {
+    return this.quizService.getPublicQuizzes(user.id);
+  }
+
+  @AuthUser()
+  @ApiOperation({
     summary: 'Get all user quizzes.',
   })
   @ApiOkResponse({
