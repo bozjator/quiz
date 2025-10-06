@@ -5,12 +5,18 @@ import { QuizController } from './quiz.controller';
 import { QuizService } from './quiz.service';
 import { AnswerModule } from '../answer/answer.module';
 import { QuestionModule } from '../question/question.module';
+import { QuestionEntity } from '../question/entities/question.entity';
+import { UserQuestionProgressEntity } from '../question/entities/user-question-progress.entity';
 
 @Module({
   imports: [
     AnswerModule,
     QuestionModule,
-    SequelizeModule.forFeature([QuizEntity]),
+    SequelizeModule.forFeature([
+      QuizEntity,
+      QuestionEntity,
+      UserQuestionProgressEntity,
+    ]),
   ],
   controllers: [QuizController],
   providers: [QuizService],
