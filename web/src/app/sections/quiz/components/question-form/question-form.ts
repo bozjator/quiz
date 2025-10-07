@@ -33,6 +33,7 @@ type AnswerFormValue = ReturnType<AnswerForm['getRawValue']>;
 interface IQuestionForm {
   question: FormControl<string | null>;
   explanation: FormControl<string | null>;
+  extraInfo: FormControl<string | null>;
   feedbackOnCorrect: FormControl<string | null>;
   feedbackOnIncorrect: FormControl<string | null>;
   correctAnswers: FormArray<AnswerForm>;
@@ -65,6 +66,7 @@ export class QuestionForm {
   form: FormGroup<IQuestionForm> = this.fb.group({
     question: ['', [Validators.required, Validators.minLength(INPUT_LENGTHS.min.question)]],
     explanation: [''],
+    extraInfo: [''],
     feedbackOnCorrect: [''],
     feedbackOnIncorrect: [''],
     correctAnswers: this.fb.array<AnswerForm>([]),
@@ -96,6 +98,7 @@ export class QuestionForm {
       this.form.patchValue({
         question: q.question,
         explanation: q.explanation,
+        extraInfo: q.extraInfo,
         feedbackOnCorrect: q.feedbackOnCorrect,
         feedbackOnIncorrect: q.feedbackOnIncorrect,
       });
@@ -165,6 +168,7 @@ export class QuestionForm {
       quizId: this.question().quizId,
       question: fv.question ?? '',
       explanation: fv.explanation ?? '',
+      extraInfo: fv.extraInfo ?? '',
       feedbackOnCorrect: fv.feedbackOnCorrect ?? '',
       feedbackOnIncorrect: fv.feedbackOnIncorrect ?? '',
     };

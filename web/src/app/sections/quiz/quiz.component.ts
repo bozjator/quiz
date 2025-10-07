@@ -105,6 +105,7 @@ export class QuizComponent {
       quizId: this.quizId(),
       question: '',
       explanation: '',
+      extraInfo: '',
       feedbackOnCorrect: '',
       feedbackOnIncorrect: '',
       createdAt: new Date().toISOString(),

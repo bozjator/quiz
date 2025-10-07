@@ -57,7 +57,7 @@
     isCorrectlyAnswered() ? question().feedbackOnCorrect : question().feedbackOnIncorrect;
   @if (feedback && feedback.length > 0) {
     <div
-      class="mt-5 p-2 rounded dark:text-gray-700 whitespace-pre-line"
+      class="mt-6 p-2 rounded dark:text-gray-700 whitespace-pre-line"
       [ngClass]="{
         'bg-green-50': isCorrectlyAnswered(),
         'bg-red-50': !isCorrectlyAnswered(),
@@ -66,5 +66,9 @@
       {{ feedback }}
     </div>
   }
-  <div class="mt-5 whitespace-pre-line">{{ question().explanation }}</div>
+  <div class="mt-8 whitespace-pre-line">{{ question().explanation }}</div>
+  <div
+    class="mt-8 text-sm italic text-gray-500 dark:text-gray-400 whitespace-pre-line"
+    [innerHTML]="formatExtraInfo(question().extraInfo)"
+  ></div>
 }

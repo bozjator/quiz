@@ -5,6 +5,7 @@ export interface Question {
   quizId: string;
   question: string;
   explanation: string;
+  extraInfo: string;
   feedbackOnCorrect: string;
   feedbackOnIncorrect: string;
   createdAt: string;

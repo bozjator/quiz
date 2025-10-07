@@ -1,7 +1,7 @@
 <form [formGroup]="form" class="flex flex-col gap-4">
   <!-- QUESTION -->
   <label class="flex flex-col gap-1 mb-4">
-    <span class="font-medium text-gray-700 text-xl">Question</span>
+    <span class="font-medium text-gray-700 dark:text-gray-200 text-xl">Question</span>
     <textarea
       formControlName="question"
       rows="4"
@@ -131,10 +131,20 @@
 
   <!-- EXPLANATION -->
   <label class="flex flex-col gap-1">
-    <span class="font-medium text-gray-700 text-xl">Explanation</span>
+    <span class="font-medium text-gray-700 dark:text-gray-200 text-xl">Explanation</span>
     <textarea
       formControlName="explanation"
       rows="8"
+      class="w-full rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    ></textarea>
+  </label>
+
+  <!-- EXTRA INFO -->
+  <label class="flex flex-col gap-1">
+    <span class="font-medium text-gray-700 dark:text-gray-200 text-xl">Extra Info</span>
+    <textarea
+      formControlName="extraInfo"
+      rows="3"
       class="w-full rounded border border-gray-300 p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
     ></textarea>
   </label>

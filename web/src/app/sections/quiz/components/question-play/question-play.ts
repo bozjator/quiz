@@ -82,4 +82,19 @@ export class QuestionPlay {
       isCorrect: this.isCorrectlyAnswered(),
     });
   }
+
+  formatExtraInfo(text?: string): string {
+    if (!text) return '';
+
+    // Regex to detect URLs (http, https, www)
+    const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+
+    // Replace URLs with clickable links that open in a new tab
+    const linkedText = text.replace(urlRegex, (url) => {
+      const href = url.startsWith('http') ? url : `https://${url}`;
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">${url}</a>`;
+    });
+
+    return linkedText;
+  }
 }
