@@ -37,6 +37,10 @@ export class QuestionEntity extends Model {
 
   @AllowNull(true)
   @Column({ type: DataType.TEXT })
+  extraInfo?: string;
+
+  @AllowNull(true)
+  @Column({ type: DataType.TEXT })
   feedbackOnCorrect?: string;
 
   @AllowNull(true)

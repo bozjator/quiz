@@ -18,6 +18,11 @@ export class CreateUpdateQuestion {
   @IsOptional()
   @IsString()
   @ApiPropertyOptional()
+  extraInfo?: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional()
   feedbackOnCorrect?: string;
 
   @IsOptional()

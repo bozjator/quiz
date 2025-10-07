@@ -17,6 +17,9 @@ export class Question {
   explanation: string;
 
   @ApiProperty()
+  extraInfo: string;
+
+  @ApiProperty()
   feedbackOnCorrect: string;
 
   @ApiProperty()
@@ -38,6 +41,7 @@ export class Question {
     this.quizId = entity.quizId;
     this.question = entity.question;
     this.explanation = entity.explanation;
+    this.extraInfo = entity.extraInfo;
     this.feedbackOnCorrect = entity.feedbackOnCorrect;
     this.feedbackOnIncorrect = entity.feedbackOnIncorrect;
     this.createdAt = entity.createdAt;
