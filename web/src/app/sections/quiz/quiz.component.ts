@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { Question } from '../../shared/models/quiz/question.model';
 import { ActivatedRoute } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { QuestionApiService } from '../../shared/services/api/question-api.service';
 import { QuizType } from '../../shared/models/quiz/quiz-type.enum';
 import { QuestionsList } from './components/questions-list/questions-list';
@@ -19,7 +20,13 @@ import { APP_STORAGE_NAMES } from '../../shared/models/other/app-storage-name.en
 @Component({
   selector: 'quiz',
   templateUrl: './quiz.component.html',
-  imports: [QuestionsList, QuestionPlay, QuestionForm, IconButtonComponent],
+  imports: [
+    QuestionsList,
+    QuestionPlay,
+    QuestionForm,
+    IconButtonComponent,
+    MatProgressSpinnerModule,
+  ],
 })
 export class QuizComponent {
   private route = inject(ActivatedRoute);
@@ -27,6 +34,8 @@ export class QuizComponent {
   private notificationService = inject(NotificationService);
   private questionApiService = inject(QuestionApiService);
   private quizApiService = inject(QuizApiService);
+
+  readonly apiCallInProgress = signal<boolean>(false);
 
   questionsToPlayCountOptions = [10, 20, 30, 60];
   questionsToPlayCount = JSON.parse(
@@ -98,8 +107,10 @@ export class QuizComponent {
   }
 
   loadQuestions(questionIdToSelect: string | null) {
+    this.apiCallInProgress.set(true);
     if (this.isEditMode()) {
       this.questionApiService.getQuestionsByQuizId(this.quizId()).subscribe((questions) => {
+        this.apiCallInProgress.set(false);
         this.questions.set(questions);
         if (questionIdToSelect) this.selectQuestion(questionIdToSelect);
         else this.selectFirstQuestion();
@@ -112,6 +123,7 @@ export class QuizComponent {
           QuizType.reinforcement,
         )
         .subscribe((questions) => {
+          this.apiCallInProgress.set(false);
           this.questions.set(questions);
           if (questionIdToSelect) this.selectQuestion(questionIdToSelect);
           else this.selectFirstQuestion();

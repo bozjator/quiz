@@ -51,6 +51,12 @@
     </div>
     <!-- Scrollable content -->
     <div class="flex-1 overflow-y-auto p-2">
+      @if (apiCallInProgress()) {
+        <div class="flex justify-center mt-6">
+          <mat-spinner [diameter]="30"></mat-spinner>
+        </div>
+      }
+
       <app-questions-list
         [isEditMode]="isEditMode()"
         [questions]="questions()"
