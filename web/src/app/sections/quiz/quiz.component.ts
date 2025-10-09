@@ -14,6 +14,7 @@ import { QuizApiService } from '../../shared/services/api/quiz-api.service';
 import { NotificationService } from '../../shared/components/others/notification/notification.service';
 import { AlertType } from '../../shared/components/alert.component';
 import { Quiz } from '../../shared/models/quiz/quiz.model';
+import { APP_STORAGE_NAMES } from '../../shared/models/other/app-storage-name.enum';
 
 @Component({
   selector: 'quiz',
@@ -27,8 +28,10 @@ export class QuizComponent {
   private questionApiService = inject(QuestionApiService);
   private quizApiService = inject(QuizApiService);
 
-  questionsToPlayCount = 30;
   questionsToPlayCountOptions = [10, 20, 30, 60];
+  questionsToPlayCount = JSON.parse(
+    window.localStorage.getItem(APP_STORAGE_NAMES.questionsToPlayCount) ?? '30',
+  );
 
   quizPlayService = new QuizPlayService();
   quizEditService = new QuizEditService();
@@ -87,6 +90,10 @@ export class QuizComponent {
     const currentIndex = this.questionsToPlayCountOptions.indexOf(this.questionsToPlayCount);
     const nextIndex = (currentIndex + 1) % this.questionsToPlayCountOptions.length;
     this.questionsToPlayCount = this.questionsToPlayCountOptions[nextIndex];
+    window.localStorage.setItem(
+      APP_STORAGE_NAMES.questionsToPlayCount,
+      JSON.stringify(this.questionsToPlayCount),
+    );
     this.loadQuestions(null);
   }
 
