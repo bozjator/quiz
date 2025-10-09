@@ -27,6 +27,9 @@ export class QuizComponent {
   private questionApiService = inject(QuestionApiService);
   private quizApiService = inject(QuizApiService);
 
+  questionsToPlayCount = 30;
+  questionsToPlayCountOptions = [10, 20, 30, 60];
+
   quizPlayService = new QuizPlayService();
   quizEditService = new QuizEditService();
 
@@ -80,6 +83,13 @@ export class QuizComponent {
     }
   }
 
+  setQuestionsToPlayCount() {
+    const currentIndex = this.questionsToPlayCountOptions.indexOf(this.questionsToPlayCount);
+    const nextIndex = (currentIndex + 1) % this.questionsToPlayCountOptions.length;
+    this.questionsToPlayCount = this.questionsToPlayCountOptions[nextIndex];
+    this.loadQuestions(null);
+  }
+
   loadQuestions(questionIdToSelect: string | null) {
     if (this.isEditMode()) {
       this.questionApiService.getQuestionsByQuizId(this.quizId()).subscribe((questions) => {
@@ -88,9 +98,12 @@ export class QuizComponent {
         else this.selectFirstQuestion();
       });
     } else {
-      const questionsToPlayCount = 30;
       this.questionApiService
-        .getQuestionsByQuizIdToPlay(this.quizId(), questionsToPlayCount, QuizType.reinforcement)
+        .getQuestionsByQuizIdToPlay(
+          this.quizId(),
+          this.questionsToPlayCount,
+          QuizType.reinforcement,
+        )
         .subscribe((questions) => {
           this.questions.set(questions);
           if (questionIdToSelect) this.selectQuestion(questionIdToSelect);
