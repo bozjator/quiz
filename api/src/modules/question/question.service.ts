@@ -196,9 +196,9 @@ export class QuestionService {
 
     // Update reinforcement counter.
     if (isCorrectlyAnswered) {
-      progress.reinforcement = Math.min(10, (progress.reinforcement || 0) + 1);
+      progress.reinforcement = (progress.reinforcement || 0) + 1;
     } else {
-      progress.reinforcement = Math.max(-10, (progress.reinforcement || 0) - 1);
+      progress.reinforcement = (progress.reinforcement || 0) - 1;
     }
 
     await progress.save();

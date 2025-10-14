@@ -32,5 +32,5 @@ export class UserQuestionProgressEntity extends Model {
   lastSeen: Date;
 
   @Column({ type: DataType.INTEGER, defaultValue: 0 })
-  reinforcement: number; // -10 .. 10
+  reinforcement: number;
 }
