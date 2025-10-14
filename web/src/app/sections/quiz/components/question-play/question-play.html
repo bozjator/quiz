@@ -7,7 +7,7 @@
 
 @for (answer of question().answers; track answer.id) {
   <div
-    class="p-2 mb-2 border rounded cursor-pointer"
+    class="p-2 mb-2 border rounded"
     [class.bg-green-100]="answer.isCorrect && isAnswered()"
     [class.bg-red-100]="!answer.isCorrect && isAnswered()"
     [class.border-green-400]="answer.isCorrect && isAnswered()"
