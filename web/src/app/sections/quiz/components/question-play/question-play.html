@@ -55,17 +55,34 @@
 @if (hasPressedAnswer()) {
   @let feedback =
     isCorrectlyAnswered() ? question().feedbackOnCorrect : question().feedbackOnIncorrect;
-  @if (feedback && feedback.length > 0) {
+  <div
+    class="mt-6 p-2 rounded dark:text-gray-700 text-gray-800 whitespace-pre-line border"
+    [ngClass]="{
+      'bg-green-50': isCorrectlyAnswered(),
+      'bg-red-50': !isCorrectlyAnswered(),
+      'border-green-200': isCorrectlyAnswered(),
+      'border-red-200': !isCorrectlyAnswered(),
+    }"
+  >
     <div
-      class="mt-6 p-2 rounded dark:text-gray-700 whitespace-pre-line"
-      [ngClass]="{
-        'bg-green-50': isCorrectlyAnswered(),
-        'bg-red-50': !isCorrectlyAnswered(),
-      }"
+      class="flex items-center gap-1 font-medium"
+      [ngClass]="isCorrectlyAnswered() ? 'text-green-600' : 'text-red-600'"
     >
-      {{ feedback }}
+      @if (isCorrectlyAnswered()) {
+        <mat-icon class="text-green-500 text-[22px]">check_circle</mat-icon>
+        Correct
+      } @else {
+        <mat-icon class="text-red-500 text-[22px]">cancel</mat-icon>
+        Incorrect
+      }
     </div>
-  }
+    @if (feedback && feedback.length > 0) {
+      <div class="m-2">
+        {{ feedback }}
+      </div>
+    }
+  </div>
+
   <div class="mt-8 whitespace-pre-line">{{ question().explanation }}</div>
   <div
     class="mt-8 text-sm italic text-gray-500 dark:text-gray-400 whitespace-pre-line"

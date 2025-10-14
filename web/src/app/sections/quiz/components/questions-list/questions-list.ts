@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { Question } from '../../../../shared/models/quiz/question.model';
 import { QuestionAnswerState } from '../../../../shared/models/quiz/question-answer-state.model';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-questions-list',

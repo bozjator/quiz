@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { Question } from '../../../../shared/models/quiz/question.model';
 import { QuestionAnswerState } from '../../../../shared/models/quiz/question-answer-state.model';
 import { QuestionApiService } from '../../../../shared/services/api/question-api.service';
@@ -9,7 +10,7 @@ import { AlertType } from '../../../../shared/components/alert.component';
 @Component({
   selector: 'app-question-play',
   templateUrl: './question-play.html',
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
 })
 export class QuestionPlay {
   private questionApiService = inject(QuestionApiService);
