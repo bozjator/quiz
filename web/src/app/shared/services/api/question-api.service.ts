@@ -21,6 +21,8 @@ export class QuestionApiService extends AppHttpService {
     const query: QuizQuestionsQuery = {
       type: quizType,
       count: questionsCount,
+      percentOfNew: 40,
+      percentOfSeenOldest: 20,
     };
     const params = this.toHttpParams(query);
     return this.http.get<Question[]>(this.url('quiz/' + quizId + '/play'), { params });
