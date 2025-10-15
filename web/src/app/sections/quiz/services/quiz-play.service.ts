@@ -12,6 +12,10 @@ export class QuizPlayService {
     return { answeredCount, correctCount, percentage };
   });
 
+  clearAnswerStates() {
+    this.questionAnswerStates.set({});
+  }
+
   saveAnswerState(
     questionId: string,
     selectedIds: string[],

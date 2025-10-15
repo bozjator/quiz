@@ -107,6 +107,7 @@ export class QuizComponent {
   }
 
   loadQuestions(questionIdToSelect: string | null) {
+    this.quizPlayService.clearAnswerStates();
     this.apiCallInProgress.set(true);
     if (this.isEditMode()) {
       this.questionApiService.getQuestionsByQuizId(this.quizId()).subscribe((questions) => {
