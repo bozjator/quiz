@@ -37,7 +37,8 @@ export class QuizComponent {
 
   readonly apiCallInProgress = signal<boolean>(false);
 
-  questionsToPlayCountOptions = [10, 20, 30, 60];
+  questionsToPlayCountOptionsBase = [10, 20, 30, 60];
+  questionsToPlayCountOptions = [...this.questionsToPlayCountOptionsBase];
   questionsToPlayCount = JSON.parse(
     window.localStorage.getItem(APP_STORAGE_NAMES.questionsToPlayCount) ?? '30',
   );
@@ -99,10 +100,16 @@ export class QuizComponent {
     const currentIndex = this.questionsToPlayCountOptions.indexOf(this.questionsToPlayCount);
     const nextIndex = (currentIndex + 1) % this.questionsToPlayCountOptions.length;
     this.questionsToPlayCount = this.questionsToPlayCountOptions[nextIndex];
-    window.localStorage.setItem(
-      APP_STORAGE_NAMES.questionsToPlayCount,
-      JSON.stringify(this.questionsToPlayCount),
-    );
+
+    // Persistently store selected number of questions to play, but only if it's one of the base options.
+    const indexFromBase = this.questionsToPlayCountOptionsBase.indexOf(this.questionsToPlayCount);
+    if (indexFromBase !== -1) {
+      window.localStorage.setItem(
+        APP_STORAGE_NAMES.questionsToPlayCount,
+        JSON.stringify(this.questionsToPlayCount),
+      );
+    }
+
     this.loadQuestions(null);
   }
 
@@ -126,6 +133,10 @@ export class QuizComponent {
         .subscribe((questions) => {
           this.apiCallInProgress.set(false);
           this.questions.set(questions);
+          this.questionsToPlayCountOptions = [
+            ...this.questionsToPlayCountOptionsBase,
+            questions.length,
+          ];
           if (questionIdToSelect) this.selectQuestion(questionIdToSelect);
           else this.selectFirstQuestion();
         });
