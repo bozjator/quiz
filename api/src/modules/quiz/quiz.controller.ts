@@ -14,6 +14,7 @@ import { ReqUser } from 'src/auth/decorators/req-user.decorator';
 import { UpdateQuiz } from './dtos/update-quiz.dto';
 import { QuizUserProgress } from './dtos/quiz-user-progress.dto';
 import { CreateQuizPlayResult } from './dtos/create-quiz-play-result.dto';
+import { QuizPlayResult } from './dtos/quiz-play-result.dto';
 
 @ApiTags('quiz')
 @Controller('quiz')
@@ -80,6 +81,19 @@ export class QuizController {
     @ReqUser() user: UserInRequest,
   ) {
     return this.quizService.getUserQuizProgress(quizId, user.id);
+  }
+
+  @AuthUser()
+  @ApiOperation({
+    summary: 'Get user quiz play results.',
+  })
+  @ApiOkResponse({ type: QuizPlayResult })
+  @Get(':id/play-results')
+  getUserQuizPlayResults(
+    @Param('id') quizId: string,
+    @ReqUser() user: UserInRequest,
+  ) {
+    return this.quizService.getUserQuizPlayResults(user.id, quizId);
   }
 
   @AuthUser()

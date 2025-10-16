@@ -89,6 +89,16 @@ export class QuizService {
     return progress;
   }
 
+  async getUserQuizPlayResults(userId: number, quizId: string) {
+    return this.quizPlayResultEntity.findAll({
+      where: {
+        [COLUMN_QUIZ_PLAY_RESULT.userId]: userId,
+        [COLUMN_QUIZ_PLAY_RESULT.quizId]: quizId,
+      },
+      order: [['createdAt', 'DESC']],
+    });
+  }
+
   async createQuiz(
     createDto: Partial<CreateQuiz>,
     userId: number,
@@ -110,7 +120,7 @@ export class QuizService {
 
   async createQuizPlayResult(
     dto: CreateQuizPlayResult,
-    id: number,
+    userId: number,
     quizId: string,
   ) {
     const quiz = await this.getQuiz(quizId);
@@ -121,7 +131,7 @@ export class QuizService {
         ? Math.round((dto.correctAnswersCount / dto.questionsCount) * 100)
         : 0;
     await this.quizPlayResultEntity.create({
-      [COLUMN_QUIZ_PLAY_RESULT.userId]: id,
+      [COLUMN_QUIZ_PLAY_RESULT.userId]: userId,
       [COLUMN_QUIZ_PLAY_RESULT.quizId]: quizId,
       [COLUMN_QUIZ_PLAY_RESULT.resultPercentages]: resultPercentages,
       ...dto,
