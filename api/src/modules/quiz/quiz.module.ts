@@ -7,6 +7,7 @@ import { AnswerModule } from '../answer/answer.module';
 import { QuestionModule } from '../question/question.module';
 import { QuestionEntity } from '../question/entities/question.entity';
 import { UserQuestionProgressEntity } from '../question/entities/user-question-progress.entity';
+import { QuizPlayResultEntity } from './entities/quiz-play-result.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserQuestionProgressEntity } from '../question/entities/user-question-p
     SequelizeModule.forFeature([
       QuizEntity,
       QuestionEntity,
+      QuizPlayResultEntity,
       UserQuestionProgressEntity,
     ]),
   ],

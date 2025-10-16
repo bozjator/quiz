@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { COLUMN_QUIZ, QuizEntity } from './entities/quiz.entity';
 import { CreateQuiz } from './dtos/create-quiz.dto';
@@ -7,12 +7,19 @@ import { QuestionEntity } from '../question/entities/question.entity';
 import { UserQuestionProgressEntity } from '../question/entities/user-question-progress.entity';
 import { QuizUserProgress } from './dtos/quiz-user-progress.dto';
 import { Quiz } from './dtos/quiz.dto';
+import { CreateQuizPlayResult } from './dtos/create-quiz-play-result.dto';
+import {
+  COLUMN_QUIZ_PLAY_RESULT,
+  QuizPlayResultEntity,
+} from './entities/quiz-play-result.entity';
 
 @Injectable()
 export class QuizService {
   constructor(
     @InjectModel(QuizEntity) private quizEntity: typeof QuizEntity,
     @InjectModel(QuestionEntity) private questionEntity: typeof QuestionEntity,
+    @InjectModel(QuizPlayResultEntity)
+    private quizPlayResultEntity: typeof QuizPlayResultEntity,
     @InjectModel(UserQuestionProgressEntity)
     private userQuestionProgressEntity: typeof UserQuestionProgressEntity,
   ) {}
@@ -99,5 +106,25 @@ export class QuizService {
       where: { [COLUMN_QUIZ.userId]: userId, id: quizId },
     });
     return affectedCount[0];
+  }
+
+  async createQuizPlayResult(
+    dto: CreateQuizPlayResult,
+    id: number,
+    quizId: string,
+  ) {
+    const quiz = await this.getQuiz(quizId);
+    if (!quiz) throw new NotFoundException('Quiz not found');
+
+    const resultPercentages =
+      dto.questionsCount > 0
+        ? Math.round((dto.correctAnswersCount / dto.questionsCount) * 100)
+        : 0;
+    await this.quizPlayResultEntity.create({
+      [COLUMN_QUIZ_PLAY_RESULT.userId]: id,
+      [COLUMN_QUIZ_PLAY_RESULT.quizId]: quizId,
+      [COLUMN_QUIZ_PLAY_RESULT.resultPercentages]: resultPercentages,
+      ...dto,
+    });
   }
 }

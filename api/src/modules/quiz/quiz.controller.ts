@@ -13,6 +13,7 @@ import { UserInRequest } from 'src/auth/models/user-in-request.model';
 import { ReqUser } from 'src/auth/decorators/req-user.decorator';
 import { UpdateQuiz } from './dtos/update-quiz.dto';
 import { QuizUserProgress } from './dtos/quiz-user-progress.dto';
+import { CreateQuizPlayResult } from './dtos/create-quiz-play-result.dto';
 
 @ApiTags('quiz')
 @Controller('quiz')
@@ -107,5 +108,19 @@ export class QuizController {
     @ReqUser() user: UserInRequest,
   ) {
     return this.quizService.updateQuiz(quizId, user.id, dto);
+  }
+
+  @AuthUser()
+  @ApiOperation({
+    summary: 'Store quiz play result.',
+  })
+  @ApiCreatedResponse()
+  @Post(':id/play-result')
+  storeQuizPlayResult(
+    @Param('id') quizId: string,
+    @Body() dto: CreateQuizPlayResult,
+    @ReqUser() user: UserInRequest,
+  ) {
+    return this.quizService.createQuizPlayResult(dto, user.id, quizId);
   }
 }
