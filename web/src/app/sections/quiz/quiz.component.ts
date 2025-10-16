@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { Question } from '../../shared/models/quiz/question.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -69,6 +69,14 @@ export class QuizComponent {
 
       this.loadQuestions(null);
     });
+
+    effect(() => {
+      this.quizPlayService.quizQuestionsCount = this.questions().length;
+    });
+
+    effect(() => {
+      this.quizPlayService.quizId = this.quizId();
+    });
   }
 
   private loadQuiz(id: string) {
@@ -114,6 +122,7 @@ export class QuizComponent {
   }
 
   loadQuestions(questionIdToSelect: string | null) {
+    this.quizPlayService.quizStartDate = new Date();
     this.quizPlayService.clearAnswerStates();
     this.apiCallInProgress.set(true);
     if (this.isEditMode()) {
