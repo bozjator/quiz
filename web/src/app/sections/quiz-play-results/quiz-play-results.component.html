@@ -1,11 +1,11 @@
 <table class="w-full border-collapse">
   <thead>
     <tr class="border-b border-gray-300">
-      <th class="text-left p-3">Questions</th>
-      <th class="text-left p-3">Correct</th>
-      <th class="text-left p-3">Result</th>
-      <th class="text-left p-3">Duration</th>
-      <th class="text-left p-3">Date</th>
+      <th class="text-left p-0.5 pl-2">Questions</th>
+      <th class="text-left">Correct</th>
+      <th class="text-left">Result</th>
+      <th class="text-left">Duration</th>
+      <th class="text-left">Date</th>
     </tr>
   </thead>
   <tbody>
@@ -17,11 +17,11 @@
           'bg-red-50 dark:bg-red-900/40': result.resultPercentages < 75,
         }"
       >
-        <td class="p-3">{{ result.questionsCount }}</td>
-        <td class="p-3">{{ result.correctAnswersCount }}</td>
-        <td class="p-3">{{ result.resultPercentages }} %</td>
-        <td class="p-3">{{ result.duration | secondsToTime }}</td>
-        <td class="p-3">{{ result.createdAt | date: 'dd. MM. yyyy HH:mm' }}</td>
+        <td class="p-0.5 pl-2">{{ result.questionsCount }}</td>
+        <td class="p-0.5">{{ result.correctAnswersCount }}</td>
+        <td class="p-0.5">{{ result.resultPercentages }} %</td>
+        <td class="p-0.5">{{ result.duration | secondsToTime }}</td>
+        <td class="p-0.5">{{ result.createdAt | date: 'dd. MM. yyyy HH:mm' }}</td>
       </tr>
     }
   </tbody>
