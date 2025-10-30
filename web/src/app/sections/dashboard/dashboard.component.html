@@ -3,6 +3,7 @@
   <table class="w-full border-collapse">
     <thead>
       <tr class="border-b border-gray-300">
+        <th class="text-left p-3"></th>
         <th class="text-left p-3">Title</th>
         <th class="text-left p-3">Total Questions</th>
         <th class="text-left p-3">Not Answered</th>
@@ -14,6 +15,13 @@
     <tbody>
       @for (quiz of publicQuizzes(); track quiz.id) {
         <tr class="border-b border-gray-200 dark:hover:bg-gray-700 hover:bg-gray-100">
+          <td class="p-3">
+            <app-icon-button
+              [routerLink]="['/quiz-play-results', quiz.id]"
+              [size]="20"
+              [icon]="'bar_chart_4_bars'"
+            />
+          </td>
           <td class="p-3">
             <a
               class="cursor-pointer hover:underline dark:text-gray-200"

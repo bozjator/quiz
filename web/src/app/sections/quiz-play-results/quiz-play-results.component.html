@@ -1,0 +1,29 @@
+<table class="w-full border-collapse">
+  <thead>
+    <tr class="border-b border-gray-300">
+      <th class="text-left p-3">Questions</th>
+      <th class="text-left p-3">Correct</th>
+      <th class="text-left p-3">Result</th>
+      <th class="text-left p-3">Duration</th>
+      <th class="text-left p-3">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (result of quizPlayResults(); track result.id) {
+      <tr class="border-b border-gray-200 dark:hover:bg-gray-700 hover:bg-gray-100">
+        <td class="p-3">{{ result.questionsCount }}</td>
+        <td class="p-3">{{ result.correctAnswersCount }}</td>
+        <td class="p-3">{{ result.resultPercentages }} %</td>
+        <td class="p-3">{{ result.duration | secondsToTime }}</td>
+        <td class="p-3">{{ result.createdAt | date: 'dd. MM. yyyy HH:mm' }}</td>
+      </tr>
+    }
+  </tbody>
+</table>
+@if (apiCallLoadingQuizPlayResults()) {
+  <div>Loading quiz play results...</div>
+} @else if (quizPlayResults().length === 0) {
+  <div class="text-gray-500 dark:text-gray-400 text-sm mt-2">
+    No quiz play results available at the moment.
+  </div>
+}

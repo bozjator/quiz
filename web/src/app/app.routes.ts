@@ -30,6 +30,13 @@ export const routes: Routes = [
         loadComponent: () => import('./sections/quiz/quiz.component').then((m) => m.QuizComponent),
       },
       {
+        path: 'quiz-play-results/:id',
+        loadComponent: () =>
+          import('./sections/quiz-play-results/quiz-play-results.component').then(
+            (m) => m.QuizPlayResultsComponent,
+          ),
+      },
+      {
         path: 'settings',
         children: [
           {
