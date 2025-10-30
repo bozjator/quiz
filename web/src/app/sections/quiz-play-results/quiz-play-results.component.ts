@@ -23,13 +23,19 @@ export class QuizPlayResultsComponent {
   apiCallLoadingQuizPlayResults = signal(false);
   quizPlayResults = signal<Array<QuizPlayResult>>([]);
 
+  private pageTitle = 'Quiz Play Results';
+  private pageIcon = 'bar_chart_4_bars';
+
   constructor() {
-    this.layoutService.setPageTitle('Quiz Play Results', 'bar_chart_4_bars');
+    this.layoutService.setPageTitle(this.pageTitle, this.pageIcon);
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       this.quizId.set(id ?? '');
 
-      if (this.quizId()) this.loadQuizPlayResults(this.quizId());
+      if (this.quizId()) {
+        this.loadQuiz(this.quizId());
+        this.loadQuizPlayResults(this.quizId());
+      }
     });
   }
 
@@ -43,6 +49,19 @@ export class QuizPlayResultsComponent {
       },
       error: () => {
         this.notificationService.show('Failed to get quiz play results.', {
+          type: AlertType.red,
+        });
+      },
+    });
+  }
+
+  private loadQuiz(id: string) {
+    this.quizApiService.getQuiz(id).subscribe({
+      next: (quiz) => {
+        this.layoutService.setPageTitle(`${this.pageTitle} - ${quiz.title}`, this.pageIcon);
+      },
+      error: () => {
+        this.notificationService.show('Failed to get quiz data.', {
           type: AlertType.red,
         });
       },
