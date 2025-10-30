@@ -10,7 +10,13 @@
   </thead>
   <tbody>
     @for (result of quizPlayResults(); track result.id) {
-      <tr class="border-b border-gray-200 dark:hover:bg-gray-700 hover:bg-gray-100">
+      <tr
+        class="border-b border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+        [ngClass]="{
+          'bg-green-50 dark:bg-green-900/40': result.resultPercentages >= 75,
+          'bg-red-50 dark:bg-red-900/40': result.resultPercentages < 75,
+        }"
+      >
         <td class="p-3">{{ result.questionsCount }}</td>
         <td class="p-3">{{ result.correctAnswersCount }}</td>
         <td class="p-3">{{ result.resultPercentages }} %</td>
@@ -20,6 +26,7 @@
     }
   </tbody>
 </table>
+
 @if (apiCallLoadingQuizPlayResults()) {
   <div>Loading quiz play results...</div>
 } @else if (quizPlayResults().length === 0) {

@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { LayoutService } from '../../layout/layout.service';
 import { QuizApiService } from '../../shared/services/api/quiz-api.service';
 import { NotificationService } from '../../shared/components/others/notification/notification.service';
@@ -11,7 +11,7 @@ import { SecondsToTimePipe } from '../../shared/pipes/seconds-to-time.pipe';
 @Component({
   selector: 'quiz-play-results',
   templateUrl: './quiz-play-results.component.html',
-  imports: [DatePipe, SecondsToTimePipe],
+  imports: [CommonModule, DatePipe, SecondsToTimePipe],
 })
 export class QuizPlayResultsComponent {
   layoutService = inject(LayoutService);
