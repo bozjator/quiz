@@ -37,7 +37,7 @@ export class QuizComponent {
 
   readonly apiCallInProgress = signal<boolean>(false);
 
-  questionsToPlayCountOptions = [10, 20, 30, 60];
+  questionsToPlayCountOptions = [10, 20, 30, 60, 500];
   questionsToPlayCount = JSON.parse(
     window.localStorage.getItem(APP_STORAGE_NAMES.questionsToPlayCount) ?? '30',
   );
